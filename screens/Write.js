@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components/native'
 import colors from '../color'
 import { Alert } from 'react-native'
