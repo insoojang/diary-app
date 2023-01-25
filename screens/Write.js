@@ -1,8 +1,59 @@
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components/native'
 import colors from '../color'
 import { Alert } from 'react-native'
+import { useDB } from '../context'
 
+const Write = ({ navigation: { goBack } }) => {
+    const realm = useDB()
+    const [selectEmotion, setEmotion] = useState(null)
+    const [feelings, setFeelings] = useState('')
+    const onChangeText = (text) => setFeelings(text)
+    const onEmotionPress = (face) => setEmotion(face)
+    const onSubmit = () => {
+        if (feelings === '' || selectEmotion === null) {
+            return Alert.alert('Please Complete form')
+        }
+        realm.write(() => {
+            const feeling = realm.create('Feeling', {
+                _id: Date.now(),
+                emotion: selectEmotion,
+                message: feelings,
+            })
+        })
+        goBack()
+    }
+    return (
+        <View>
+            <Title>How do you feel today?</Title>
+            <Emotions>
+                {emotions.map((emotion, index) => (
+                    <Emotion
+                        selected={emotion === selectEmotion}
+                        onPress={() => {
+                            onEmotionPress(emotion)
+                        }}
+                        key={index}
+                    >
+                        <EmotionText>{emotion}</EmotionText>
+                    </Emotion>
+                ))}
+            </Emotions>
+            <TextInput
+                returnKeyType="done"
+                onSubmitEditing={onSubmit}
+                onChangeText={onChangeText}
+                value={feelings}
+                placeholder="Write your feelings.."
+            />
+            <Btn onPress={onSubmit}>
+                <BtnText>Save</BtnText>
+            </Btn>
+        </View>
+    )
+}
+
+export default Write
 const View = styled.View`
     background-color: ${colors.bgColor};
     flex: 1;
@@ -53,44 +104,3 @@ const EmotionText = styled.Text`
     font-size: 24px;
 `
 const emotions = ['🤯', '🥲', '🤬', '🤗', '🥰', '😊', '🤩']
-const Write = () => {
-    const [selectEmotion, setEmotion] = useState(null)
-    const [feelings, setFeelings] = useState('')
-    const onChangeText = (text) => setFeelings(text)
-    const onEmotionPress = (face) => setEmotion(face)
-    const onSubmit = () => {
-        if (feelings === '' || selectEmotion === null) {
-            return Alert.alert('Please Complete form')
-        }
-    }
-    return (
-        <View>
-            <Title>How do you feel today?</Title>
-            <Emotions>
-                {emotions.map((emotion, index) => (
-                    <Emotion
-                        selected={emotion === selectEmotion}
-                        onPress={() => {
-                            onEmotionPress(emotion)
-                        }}
-                        key={index}
-                    >
-                        <EmotionText>{emotion}</EmotionText>
-                    </Emotion>
-                ))}
-            </Emotions>
-            <TextInput
-                returnKeyType="done"
-                onSubmitEditing={onSubmit}
-                onChangeText={onChangeText}
-                value={feelings}
-                placeholder="Write your feelings.."
-            />
-            <Btn onPress={onSubmit}>
-                <BtnText>Save</BtnText>
-            </Btn>
-        </View>
-    )
-}
-
-export default Write

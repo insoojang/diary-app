@@ -8,3 +8,4 @@
 2. 기타 패키지 설치 : `npm install @react-navigation/native`
 3. Expo 기타 패키지 설치 : `npx expo install react-native-screens react-native-safe-area-context`
 4. prettier 설치 : `npm install -D prettier`
+5. Realm SDK 설치: `npm install Realm`
